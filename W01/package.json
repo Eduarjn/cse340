@@ -1,0 +1,20 @@
+{
+  "name": "cse340-w01-serviceconnect",
+  "version": "1.0.0",
+  "description": "CSE340 W01 Assignment - Initial Site Creation",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Eduar Fajardo",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
+}
