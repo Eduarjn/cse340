@@ -31,6 +31,10 @@ W01/
 ├── public/
 │   ├── css/style.css
 │   └── images/
+│       ├── green-valley-alliance.svg
+│       ├── readers-united.svg
+│       ├── neighbors-first.svg
+│       └── wellness-together.svg
 └── views/
     ├── index.ejs
     ├── organizations.ejs
@@ -51,16 +55,24 @@ dir difere. Por isso `views` e `public` são montados com `path.join(__dirname, 
 
 **`process.env.PORT`.** O Render injeta a porta; porta fixa não sobe.
 
-**Fallback no `<title>`.** O header usa
-`<%= typeof title !== 'undefined' ? title : 'ServiceConnect' %>`.
-Sem isso, qualquer rota que esqueça de passar `title` derruba a página com
-`ReferenceError`. Continua sendo `<%= %>`, como a rubrica pede.
+**`<title>` vem de variável EJS.** O header usa `<%= title %>`, e as cinco rotas
+(incluindo o 404) passam `title` no `res.render`. É requisito da rubrica que o
+título de cada página seja variável.
+
+**Imagens em SVG.** Os quatro cards de `/organizations` usam SVG em
+`public/images/`. São nítidos em qualquer densidade de tela, pesam ~1 KB cada e
+não dependem de CDN. Cada `<img>` tem `alt` descritivo e `width`/`height` para
+reservar o espaço antes de carregar (evita layout shift).
+
+**Um `<h1>` por página.** O título da página é `<h1>`; os títulos dos cards são
+`<h2>`. Leitor de tela e validador de acessibilidade esperam essa ordem — sem o
+`<h1>` a página não tem título programático.
 
 ## Deploy no Render
 
 - Build command: `npm install`
 - Start command: `npm start`
-- Root directory: `UNIVERSIDADE/BYU/CSE340/W01` (se o repo tiver várias semanas)
+- Root directory: `W01` (o repositório guarda uma pasta por semana)
 
 ## Checklist da rubrica
 
@@ -71,5 +83,7 @@ Sem isso, qualquer rota que esqueça de passar `title` derruba a página com
 - [x] `express.static` servindo `public/`
 - [x] Link Categories na navegação
 - [x] `.env` no `.gitignore`
+- [x] Imagens em `public/images/` renderizadas em `/organizations`
+- [x] Um `<h1>` por página
 - [x] CSS responsivo, contraste AA, foco visível
 - [ ] Testar o link do Render antes de submeter no Canvas
