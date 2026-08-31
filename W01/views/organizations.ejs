@@ -1,68 +1,32 @@
 <%- include('partials/header') %>
 
-<main class="container" id="main">
-  <section class="page-intro">
-    <h1>Partner Organizations</h1>
-    <p>Nonprofits and community groups currently hosting service projects.</p>
-  </section>
+<h1>Partner Organizations</h1>
+<p>Nonprofits and community groups hosting service projects right now.</p>
 
-  <div class="category-grid">
-    <article class="category-card card-with-media">
-      <img
-        class="card-media"
-        src="/images/green-valley-alliance.svg"
-        alt="Volunteers planting trees on rolling green hills"
-        width="800"
-        height="450"
-      >
-      <div class="card-body">
-        <h2>Green Valley Alliance</h2>
-        <p>Environmental restoration and urban tree planting across the valley.</p>
-      </div>
-    </article>
-
-    <article class="category-card card-with-media">
-      <img
-        class="card-media"
-        src="/images/readers-united.svg"
-        alt="An open book beside a stack of colorful books"
-        width="800"
-        height="450"
-      >
-      <div class="card-body">
-        <h2>Readers United</h2>
-        <p>Literacy tutoring and book drives for elementary school students.</p>
-      </div>
-    </article>
-
-    <article class="category-card card-with-media">
-      <img
-        class="card-media"
-        src="/images/neighbors-first.svg"
-        alt="Two neighbors handing over a box of groceries in front of a house"
-        width="800"
-        height="450"
-      >
-      <div class="card-body">
-        <h2>Neighbors First</h2>
-        <p>Food pantry logistics and shelter support for families in transition.</p>
-      </div>
-    </article>
-
-    <article class="category-card card-with-media">
-      <img
-        class="card-media"
-        src="/images/wellness-together.svg"
-        alt="A heart crossed by a heartbeat line next to a medical cross"
-        width="800"
-        height="450"
-      >
-      <div class="card-body">
-        <h2>Wellness Together</h2>
-        <p>Blood drives, health screenings, and mental health awareness events.</p>
-      </div>
-    </article>
+<div class="grid">
+  <div class="card">
+    <img src="/images/green-valley-alliance.svg" alt="Volunteers planting trees on green hills">
+    <h2>Green Valley Alliance</h2>
+    <p>Environmental restoration and urban tree planting across the valley.</p>
   </div>
-</main>
+
+  <div class="card">
+    <img src="/images/readers-united.svg" alt="An open book beside a stack of books">
+    <h2>Readers United</h2>
+    <p>Literacy tutoring and book drives for elementary school students.</p>
+  </div>
+
+  <div class="card">
+    <img src="/images/neighbors-first.svg" alt="Neighbors handing over a box of groceries">
+    <h2>Neighbors First</h2>
+    <p>Food pantry logistics and shelter support for families in transition.</p>
+  </div>
+
+  <div class="card">
+    <img src="/images/wellness-together.svg" alt="A heart with a heartbeat line and a medical cross">
+    <h2>Wellness Together</h2>
+    <p>Blood drives, health screenings, and mental health awareness events.</p>
+  </div>
+</div>
 
 <%- include('partials/footer') %>

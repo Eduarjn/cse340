@@ -1,36 +1,30 @@
 <%- include('partials/header') %>
 
-<main class="container" id="main">
-  <section class="hero">
-    <h1>Connect with service opportunities near you</h1>
-    <p>
-      ServiceConnect brings volunteers and local organizations together.
-      Browse organizations, discover active projects, and find the cause
-      that fits your time and skills.
-    </p>
-    <a class="button" href="/categories">Browse categories</a>
-  </section>
+<div class="hero">
+  <h1>Connect with service opportunities near you</h1>
+  <p>
+    ServiceConnect brings volunteers and local organizations together.
+    Browse organizations, find an open project, and pick the cause that
+    fits your time and skills.
+  </p>
+  <a href="/categories" class="button">Browse categories</a>
+</div>
 
-  <section class="page-intro">
-    <h2>How it works</h2>
-  </section>
-
-  <div class="category-grid">
-    <article class="category-card">
-      <h3>1. Find an organization</h3>
-      <p>Explore verified nonprofits and community groups in your area.</p>
-    </article>
-
-    <article class="category-card">
-      <h3>2. Pick a project</h3>
-      <p>Review open service projects and the time commitment each one needs.</p>
-    </article>
-
-    <article class="category-card">
-      <h3>3. Get involved</h3>
-      <p>Sign up, show up, and track the impact you make over time.</p>
-    </article>
+<div class="grid">
+  <div class="card">
+    <h2>Find an organization</h2>
+    <p>Explore nonprofits and community groups in your area.</p>
   </div>
-</main>
+
+  <div class="card">
+    <h2>Pick a project</h2>
+    <p>Check the open projects and the time each one takes.</p>
+  </div>
+
+  <div class="card">
+    <h2>Get involved</h2>
+    <p>Sign up, show up, and see the impact you make.</p>
+  </div>
+</div>
 
 <%- include('partials/footer') %>
