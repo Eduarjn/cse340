@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { getAllOrganizations } from './src/models/organizations.js';
 import { getAllProjects } from './src/models/projects.js';
 import { getAllCategories } from './src/models/categories.js';
+import { ensureDatabase } from './src/init-db.js';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -53,6 +54,15 @@ app.use((error, req, res, next) => {
   console.error(error);
   res.status(500).render('500', { title: 'Server Error' });
 });
+
+// The schema lives in src/setup.sql; create it on the first boot against an
+// empty database so a fresh deploy comes up with data already in place.
+try {
+  const created = await ensureDatabase();
+  console.log(created ? 'Database created and seeded.' : 'Database already set up.');
+} catch (error) {
+  console.error('Could not prepare the database:', error.message);
+}
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
