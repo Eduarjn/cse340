@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+
+<h1>Service Projects</h1>
+<p>Open opportunities you can join this month.</p>
+
+<div class="grid">
+  <% projects.forEach((project) => { %>
+    <div class="card">
+      <h2><%= project.project_name %></h2>
+      <p><%= project.description %></p>
+      <p><%= project.organization_name %> - <%= project.schedule %></p>
+    </div>
+  <% }); %>
+</div>
+
+<%- include('partials/footer') %>

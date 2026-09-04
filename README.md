@@ -6,7 +6,7 @@ Tarefas por semana. Cada pasta `Wxx` é um projeto independente, com o próprio
 | Semana | Tarefa | Pasta | Status |
 |---|---|---|---|
 | W01 | Initial Site Creation | [`W01/`](./W01) | ✅ concluída |
-| W02 | — | — | — |
+| W02 | Database Retrieval | [`W02/`](./W02) | ✅ concluída |
 | W03 | — | — | — |
 
 ## Como rodar qualquer semana
