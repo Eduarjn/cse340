@@ -1,12 +1,13 @@
 # CSE 340 — Web Backend Development
 
-Tarefas por semana. Cada pasta `Wxx` é um projeto independente, com o próprio
+Tarefas por semana. O deploy no Render aponta para `W01`, então a W02 foi
+construída dentro dessa mesma pasta. Cada pasta tem o próprio
 `package.json` e o próprio `node_modules`.
 
 | Semana | Tarefa | Pasta | Status |
 |---|---|---|---|
 | W01 | Initial Site Creation | [`W01/`](./W01) | ✅ concluída |
-| W02 | Database Retrieval | [`W02/`](./W02) | ✅ concluída |
+| W02 | Database Retrieval | [`W01/`](./W01) | ✅ concluída |
 | W03 | — | — | — |
 
 ## Como rodar qualquer semana

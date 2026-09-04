@@ -1,6 +1,9 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getAllOrganizations } from './src/models/organizations.js';
+import { getAllProjects } from './src/models/projects.js';
+import { getAllCategories } from './src/models/categories.js';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,20 +18,40 @@ app.get('/', (req, res) => {
   res.render('index', { title: 'ServiceConnect | Home' });
 });
 
-app.get('/organizations', (req, res) => {
-  res.render('organizations', { title: 'Partner Organizations' });
+app.get('/organizations', async (req, res, next) => {
+  try {
+    const organizations = await getAllOrganizations();
+    res.render('organizations', { title: 'Partner Organizations', organizations });
+  } catch (error) {
+    next(error);
+  }
 });
 
-app.get('/projects', (req, res) => {
-  res.render('projects', { title: 'Service Projects' });
+app.get('/projects', async (req, res, next) => {
+  try {
+    const projects = await getAllProjects();
+    res.render('projects', { title: 'Service Projects', projects });
+  } catch (error) {
+    next(error);
+  }
 });
 
-app.get('/categories', (req, res) => {
-  res.render('categories', { title: 'Service Project Categories' });
+app.get('/categories', async (req, res, next) => {
+  try {
+    const categories = await getAllCategories();
+    res.render('categories', { title: 'Service Project Categories', categories });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use((req, res) => {
   res.status(404).render('404', { title: 'Page Not Found' });
+});
+
+app.use((error, req, res, next) => {
+  console.error(error);
+  res.status(500).render('500', { title: 'Server Error' });
 });
 
 app.listen(port, () => {

@@ -4,25 +4,12 @@
 <p>Find a way to give back to your community.</p>
 
 <div class="grid">
-  <div class="card">
-    <h2>Environmental</h2>
-    <p>Park cleanups, tree planting, and sustainability projects.</p>
-  </div>
-
-  <div class="card">
-    <h2>Educational</h2>
-    <p>Tutoring, reading programs, and school supply drives.</p>
-  </div>
-
-  <div class="card">
-    <h2>Community Service</h2>
-    <p>Food banks, homeless shelters, and neighborhood revitalization.</p>
-  </div>
-
-  <div class="card">
-    <h2>Health and Wellness</h2>
-    <p>Blood drives, fitness events, and mental health awareness campaigns.</p>
-  </div>
+  <% categories.forEach((category) => { %>
+    <div class="card">
+      <h2><%= category.category_name %></h2>
+      <p><%= category.description %></p>
+    </div>
+  <% }); %>
 </div>
 
 <%- include('partials/footer') %>

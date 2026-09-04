@@ -4,29 +4,15 @@
 <p>Nonprofits and community groups hosting service projects right now.</p>
 
 <div class="grid">
-  <div class="card">
-    <img src="/images/green-valley-alliance.svg" alt="Volunteers planting trees on green hills">
-    <h2>Green Valley Alliance</h2>
-    <p>Environmental restoration and urban tree planting across the valley.</p>
-  </div>
-
-  <div class="card">
-    <img src="/images/readers-united.svg" alt="An open book beside a stack of books">
-    <h2>Readers United</h2>
-    <p>Literacy tutoring and book drives for elementary school students.</p>
-  </div>
-
-  <div class="card">
-    <img src="/images/neighbors-first.svg" alt="Neighbors handing over a box of groceries">
-    <h2>Neighbors First</h2>
-    <p>Food pantry logistics and shelter support for families in transition.</p>
-  </div>
-
-  <div class="card">
-    <img src="/images/wellness-together.svg" alt="A heart with a heartbeat line and a medical cross">
-    <h2>Wellness Together</h2>
-    <p>Blood drives, health screenings, and mental health awareness events.</p>
-  </div>
+  <% organizations.forEach((organization) => { %>
+    <div class="card">
+      <% if (organization.image_url) { %>
+        <img src="<%= organization.image_url %>" alt="<%= organization.organization_name %> logo">
+      <% } %>
+      <h2><%= organization.organization_name %></h2>
+      <p><%= organization.description %></p>
+    </div>
+  <% }); %>
 </div>
 
 <%- include('partials/footer') %>

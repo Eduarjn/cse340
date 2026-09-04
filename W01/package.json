@@ -1,12 +1,13 @@
 {
   "name": "cse340-w01-serviceconnect",
   "version": "1.0.0",
-  "description": "CSE340 W01 Assignment - Initial Site Creation",
+  "description": "CSE340 W01/W02 - Initial Site Creation + Database Retrieval",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "db:setup": "psql \"$DATABASE_URL\" -f src/setup.sql"
   },
   "engines": {
     "node": ">=20"
@@ -14,7 +15,9 @@
   "author": "Eduar Fajardo",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.13.1"
   }
 }
