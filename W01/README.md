@@ -17,7 +17,7 @@ Schema and seed data: [`src/setup.sql`](./src/setup.sql)
 Load it:
 
 ```bash
-psql "$DATABASE_URL" -f src/setup.sql
+npm run db:setup
 ```
 
 ## Running locally
