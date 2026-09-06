@@ -12,6 +12,7 @@ CREATE TABLE organization (
     organization_id SERIAL PRIMARY KEY,
     organization_name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT NOT NULL,
+    contact_email VARCHAR(255) NOT NULL,
     image_url VARCHAR(255)
 );
 
@@ -20,6 +21,8 @@ CREATE TABLE project (
     project_id SERIAL PRIMARY KEY,
     project_name VARCHAR(100) NOT NULL,
     description TEXT NOT NULL,
+    date DATE NOT NULL,
+    location VARCHAR(150) NOT NULL,
     schedule VARCHAR(100) NOT NULL,
     organization_id INT NOT NULL,
     FOREIGN KEY (organization_id) REFERENCES organization (organization_id) ON DELETE CASCADE
@@ -42,17 +45,17 @@ CREATE TABLE project_category (
     FOREIGN KEY (category_id) REFERENCES category (category_id) ON DELETE CASCADE
 );
 
-INSERT INTO organization (organization_name, description, image_url) VALUES
-('Green Valley Alliance', 'Environmental restoration and urban tree planting across the valley.', '/images/green-valley-alliance.svg'),
-('Readers United', 'Literacy tutoring and book drives for elementary school students.', '/images/readers-united.svg'),
-('Neighbors First', 'Food pantry logistics and shelter support for families in transition.', '/images/neighbors-first.svg'),
-('Wellness Together', 'Blood drives, health screenings, and mental health awareness events.', '/images/wellness-together.svg');
+INSERT INTO organization (organization_name, description, contact_email, image_url) VALUES
+('Green Valley Alliance', 'Environmental restoration and urban tree planting across the valley.', 'volunteer@greenvalleyalliance.org', '/images/green-valley-alliance.svg'),
+('Readers United', 'Literacy tutoring and book drives for elementary school students.', 'tutors@readersunited.org', '/images/readers-united.svg'),
+('Neighbors First', 'Food pantry logistics and shelter support for families in transition.', 'help@neighborsfirst.org', '/images/neighbors-first.svg'),
+('Wellness Together', 'Blood drives, health screenings, and mental health awareness events.', 'events@wellnesstogether.org', '/images/wellness-together.svg');
 
-INSERT INTO project (project_name, description, schedule, organization_id) VALUES
-('River Cleanup Day', 'Clear trash from the riverbank and restore native plants.', 'Saturday morning - 4 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Green Valley Alliance')),
-('After-School Reading Buddy', 'Read one on one with elementary students after class.', 'Weekday afternoons - 2 hours per week', (SELECT organization_id FROM organization WHERE organization_name = 'Readers United')),
-('Food Pantry Sorting', 'Sort and box donated food for weekly family pickups.', 'Flexible shifts - 3 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Neighbors First')),
-('Community Blood Drive', 'Greet donors and staff the check-in table at the mobile unit.', 'Monthly - 1 hour', (SELECT organization_id FROM organization WHERE organization_name = 'Wellness Together'));
+INSERT INTO project (project_name, description, date, location, schedule, organization_id) VALUES
+('River Cleanup Day', 'Clear trash from the riverbank and restore native plants.', '2026-10-10', 'Riverfront Park, Provo', 'Saturday morning - 4 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Green Valley Alliance')),
+('After-School Reading Buddy', 'Read one on one with elementary students after class.', '2026-10-14', 'Lincoln Elementary School, Orem', 'Weekday afternoons - 2 hours per week', (SELECT organization_id FROM organization WHERE organization_name = 'Readers United')),
+('Food Pantry Sorting', 'Sort and box donated food for weekly family pickups.', '2026-10-17', 'Neighbors First Warehouse, Provo', 'Flexible shifts - 3 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Neighbors First')),
+('Community Blood Drive', 'Greet donors and staff the check-in table at the mobile unit.', '2026-10-24', 'City Library Plaza, Springville', 'Monthly - 1 hour', (SELECT organization_id FROM organization WHERE organization_name = 'Wellness Together'));
 
 INSERT INTO category (category_name, description) VALUES
 ('Environmental', 'Park cleanups, tree planting, and sustainability projects.'),
