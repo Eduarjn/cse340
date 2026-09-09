@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+
+<h1><%= organization.organization_name %></h1>
+
+<div class="card">
+  <% if (organization.image_url) { %>
+    <img src="<%= organization.image_url %>" alt="<%= organization.organization_name %> logo">
+  <% } %>
+  <p><%= organization.description %></p>
+  <p>Contact: <a href="mailto:<%= organization.contact_email %>"><%= organization.contact_email %></a></p>
+</div>
+
+<h2>Service projects</h2>
+
+<div class="grid">
+  <% projects.forEach((project) => { %>
+    <div class="card">
+      <h3><a href="/project/<%= project.project_id %>"><%= project.title %></a></h3>
+      <p>Date: <%= project.date.toISOString().slice(0, 10) %></p>
+      <p>Location: <%= project.location %></p>
+    </div>
+  <% }); %>
+</div>
+
+<a href="/organizations" class="button">Back to organizations</a>
+
+<%- include('partials/footer') %>

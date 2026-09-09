@@ -1,9 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getAllOrganizations } from './src/models/organizations.js';
-import { getAllProjects } from './src/models/projects.js';
-import { getAllCategories } from './src/models/categories.js';
+import routes from './src/routes.js';
 import { ensureDatabase } from './src/init-db.js';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
@@ -12,39 +10,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(currentDir, 'views'));
+app.set('views', path.join(currentDir, 'src', 'views'));
 app.use(express.static(path.join(currentDir, 'public')));
 
-app.get('/', (req, res) => {
-  res.render('index', { title: 'ServiceConnect | Home' });
-});
-
-app.get('/organizations', async (req, res, next) => {
-  try {
-    const organizations = await getAllOrganizations();
-    res.render('organizations', { title: 'Partner Organizations', organizations });
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.get('/projects', async (req, res, next) => {
-  try {
-    const projects = await getAllProjects();
-    res.render('projects', { title: 'Service Projects', projects });
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.get('/categories', async (req, res, next) => {
-  try {
-    const categories = await getAllCategories();
-    res.render('categories', { title: 'Service Project Categories', categories });
-  } catch (error) {
-    next(error);
-  }
-});
+// Every page route lives in src/routes.js, which maps each path to a controller.
+app.use('/', routes);
 
 app.use((req, res) => {
   res.status(404).render('404', { title: 'Page Not Found' });

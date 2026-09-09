@@ -1,0 +1,739 @@
+================================================================================
+CSE 340 - W02 COACHING SESSION TRANSCRIPT
+Student: Eduarjose Fajardo
+Project: ServiceConnect (Node.js + Express + PostgreSQL + EJS)
+Repository: https://github.com/Eduarjn/cse340
+Topic: Database Retrieval - Server-Side Programming
+================================================================================
+
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+Hello! I am your Learning Coach and Software Mentor for this session.
+
+Welcome! Just to be clear from the start, this is a coaching session, not a
+test. It is perfectly okay - and even encouraged - to say "I don't know" or
+"I made a mistake." That's the fastest way we'll learn today.
+
+This is a safe place to learn. There is no grade here and there is no "wrong"
+answer. If at any moment you look at your own code and think "I would do this
+differently today", that is exactly the kind of thing I want to hear. Mistakes
+are the raw material of learning.
+
+We will talk about four subjects today: the design of your relational
+database, the data access layer in Node.js, routing in Express, and rendering
+with EJS. We will go slowly, one topic at a time, and you can interrupt me
+with your own questions at any moment.
+
+I am running inside a code editor with access to your repository, so I will
+cite the file name and the line numbers when I refer to your code.
+
+To begin, I only need to confirm one thing:
+
+What is your full name, as you want it to appear in the transcript?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+Eduarjose Fajardo.
+
+
+================================================================================
+TOPIC 1 - RELATIONAL DATABASE DESIGN AND STRUCTURE
+================================================================================
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+Nice to meet you, Eduarjose. The transcript will use your name.
+
+Let's start with Topic 1: relational database design and structure.
+
+I already looked at your file W01/src/setup.sql and I can see that
+ServiceConnect has four tables. But I want to hear it from you, in your own
+words, before we go into any technical detail.
+
+Tell me: which tables did you create in ServiceConnect, and what is the
+purpose of each one - what "real world thing" does each table represent?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+[First attempt: the student answered with a generic template that did not match
+his own project. It listed tables such as "account/users" and
+"appointment/message", which do not exist in ServiceConnect.]
+
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+I need to stop you here for a moment, Eduarjose - in a friendly way.
+
+If I fill in those blanks for you, the transcript stops showing your
+understanding and starts showing mine, and your understanding is exactly what
+this activity is about. And there is an important detail: the template you
+brought does not match your project. There is no table for users, accounts or
+appointments in ServiceConnect. That template looks like it belongs to a
+different student's scenario.
+
+Your real tables are in src/setup.sql, lines 11 to 46. They are: organization,
+project, category and project_category.
+
+So let's take an easier path. You do not need to get all four right at once,
+and you do not need to use fancy technical words.
+
+Look at the organization table in your setup.sql, lines 11 to 17. It has a
+name, a description, a contact email and an image.
+
+Just that one: in ServiceConnect, what is an "organization"? Who would that be
+if you had to explain the site to someone who has never seen it?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+You are completely right, I used a generic template in my previous answer and I
+got confused. Thank you for correcting me. Looking directly at lines 11 to 17
+of my setup.sql file, here it is:
+
+If I had to explain ServiceConnect to someone who has never seen it, the
+organization table represents the real institutions that use the platform. It
+can be an NGO, a company, a school, or a group of volunteers.
+
+That is why this table needs those specific fields: it stores the "identity" of
+that group. The name and the description explain who they are and what they do;
+the contact email is there so users can talk to them; and the image works as
+the logo or the profile picture of that institution.
+
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+Yes, that is it - and notice that you did something many students get wrong:
+you explained the fields by their PURPOSE, not by their data type. "The email
+is there so users can talk to them" is a business reason. That is how you
+defend a schema.
+
+Let me also use this moment for something else. Did you notice that you put
+UNIQUE on organization_name (line 13)? That is you telling the database "two
+organizations cannot have the same name". A real world rule becoming a
+constraint in the database.
+
+Now let's go to the part that really defines a RELATIONAL database - the links
+between the tables.
+
+Look at the project table, lines 20 to 29. Its last column is:
+
+    organization_id INT NOT NULL,
+    FOREIGN KEY (organization_id) REFERENCES organization (organization_id)
+        ON DELETE CASCADE
+
+That organization_id column inside the project table - what is it saying about
+the relationship between a project and an organization? Think in terms of
+quantity: how many organizations can one project have, and how many projects
+can one organization have?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+Good point about the UNIQUE, it makes total sense. It is literally the business
+rule applied inside the database to avoid duplicated organizations.
+
+About the organization_id column in the project table: that foreign key is
+creating what we call a "one-to-many" relationship.
+
+Thinking in terms of quantity, the rule works like this:
+
+One specific project can belong to only one organization. That is why it
+carries only one ID with it.
+
+But on the other hand, one organization can have many projects registered under
+its name, because many rows in the project table can carry the same
+organization_id.
+
+And since you pasted the code, the ON DELETE CASCADE at the end means that if
+an organization is deleted from the database, all the projects linked to its ID
+are deleted automatically as well, right?
+
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+Perfect, and your reading of ON DELETE CASCADE is exactly right. You even
+anticipated the question I was going to ask, which is a good sign.
+
+Here is something to think about: CASCADE is convenient, but it is a decision
+with a consequence. Deleting an organization silently deletes its whole project
+history. The alternative would be ON DELETE RESTRICT, which would block the
+deletion while linked projects still exist. There is no right answer here -
+only a trade-off between "clean everything together" and "protect the history".
+Making that choice consciously is what matters.
+
+Now we arrive at the most interesting part of your schema. Look at this table,
+lines 40 to 46 of setup.sql:
+
+    CREATE TABLE project_category (
+        project_id INT NOT NULL,
+        category_id INT NOT NULL,
+        PRIMARY KEY (project_id, category_id),
+        FOREIGN KEY (project_id) REFERENCES project (project_id)
+            ON DELETE CASCADE,
+        FOREIGN KEY (category_id) REFERENCES category (category_id)
+            ON DELETE CASCADE
+    );
+
+Notice that it is different from the other three: it has no SERIAL PRIMARY KEY
+of its own, no name, no description. It only has two IDs.
+
+Why did you need to create this table? In other words: why was it not enough to
+put a category_id column inside the project table, the same way you did with
+organization_id?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+Exactly, I needed to create that table because here we have a many-to-many
+relationship.
+
+If I put category_id directly in the project table, I would be limiting the
+system so that a project could only have one single category. But in the real
+world, the same project can have several categories, and one category obviously
+contains many projects.
+
+That is why project_category comes in as a junction table (also called an
+associative table). It works only as a "bridge" that stores the combinations of
+IDs. And using the composite PRIMARY KEY (project_id, category_id) was the way
+to guarantee that I do not register the exact same category for the same
+project twice.
+
+(One more thing: we run this setup.sql file on a real database to create these
+structures. Since we are using things like SERIAL PRIMARY KEY, I imagine our
+environment here is PostgreSQL, right?)
+
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+Complete answer - and you used the correct term, "junction table". The detail
+about the composite primary key is what closes the reasoning: it does not only
+identify the row, it also FORBIDS the duplicate. Again, a business rule
+becoming a constraint.
+
+And yes, it is PostgreSQL. You found the right clue: SERIAL is Postgres syntax
+(in MySQL it would be AUTO_INCREMENT, in SQL Server it would be IDENTITY). We
+can confirm it in src/database.js line 1, where you import the pg driver and
+create a Pool, and the ssl option in that file shows that the target is a
+hosted Postgres, on Render.
+
+To close Topic 1, the rubric asks you to bring ONE RELEVANT SQL QUERY - not the
+CREATE TABLE, but a query that USES the relationships we just discussed.
+
+Here it is, from src/models/projects.js lines 4 to 9:
+
+    SELECT p.project_id, p.project_name, p.description,
+           p.date, p.location, p.schedule,
+           o.organization_name
+    FROM project p
+    JOIN organization o ON o.organization_id = p.organization_id
+    ORDER BY p.date ASC, p.project_name ASC
+
+Here is a hint so you can reason instead of guessing. Notice two things:
+
+- The FROM clause is only project. So in principle everything this query brings
+  comes from the project table.
+- But in the SELECT list there is a field that DOES NOT EXIST in the project
+  table: o.organization_name. If you go back to setup.sql lines 20-29, you will
+  see that project stores only organization_id - a number, like 1, 2 or 3.
+
+And on the projects page you do not want to show "Organization 3". You want to
+show "Green Valley Alliance".
+
+With that in mind: what is the line JOIN organization o ON o.organization_id =
+p.organization_id doing? Describe it in your own words - and what would happen
+to your projects page if you deleted that line from the query?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+That is a very good hint. Thinking about it that way, what the JOIN does is act
+like a translator. The project table only has the organization_id (a number,
+like 3). The JOIN takes that number, goes to the organization table, and picks
+up the real name that matches it.
+
+If I deleted the JOIN line in the middle of the query, the query would break,
+because the database would not know where to get the o.organization_name that I
+asked for in the SELECT.
+
+And even if I fixed the SELECT to ask only for p.organization_id, so that the
+database would not throw an error, the problem would show up on the website
+page. The user experience would be terrible: instead of reading the friendly
+name of the NGO, like "Green Valley Alliance", the user would see
+"Organization: 3" on the screen. The JOIN exists exactly to put the separated
+data together and deliver complete, readable information to the application.
+
+
+================================================================================
+TOPIC 2 - SERVER-SIDE DATA ACCESS LOGIC (NODE.JS)
+================================================================================
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+That closes Topic 1 very well. "Translator" is a good analogy, and you went
+further than my question by separating the two consequences: the database error
+AND the user experience problem. They are different things, and you noticed
+that on your own.
+
+Some vocabulary to take with you: the organization_id in the project table is
+the FOREIGN KEY, and the organization_id in the organization table is the
+PRIMARY KEY. The JOIN ... ON is literally you telling the database "match the
+foreign key here with the primary key there". That is the mechanism that gives
+a relational database its name: the data lives separated in specialized tables
+and only comes together at the moment of the query.
+
+Let's move to Topic 2: server-side data access logic in Node.js.
+
+That SQL query does not float alone - it lives inside a function. Here is the
+whole file src/models/projects.js:
+
+    import pool from '../database.js';
+
+    export const getAllProjects = async () => {
+      const sql = `SELECT p.project_id, p.project_name, p.description,
+                          p.date, p.location, p.schedule,
+                          o.organization_name
+                   FROM project p
+                   JOIN organization o ON o.organization_id = p.organization_id
+                   ORDER BY p.date ASC, p.project_name ASC`;
+      const result = await pool.query(sql);
+      return result.rows;
+    };
+
+I want to focus on one specific line:
+
+    const result = await pool.query(sql);
+
+Notice that there is an await there, and that the function was declared as
+async. Those two always travel together.
+
+Why does this call need await? In other words: what does await make your
+program do, and what would go wrong if you removed that word?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+The explanation about primary and foreign keys makes total sense, thank you for
+summarizing it that way.
+
+Moving to Topic 2, about async/await: the call needs await because the
+communication with the database (which is hosted outside, on Render) is not
+instant. The database takes some milliseconds to receive the query, process it,
+and send the data back over the network.
+
+What await does is literally tell JavaScript to "wait" for the result of that
+operation. It says: "do not go to the next line until the database has given me
+the answer".
+
+If I removed the word await, Node.js would not wait. It would fire the command
+pool.query(sql) and jump instantly to the next line (return result.rows). The
+problem is that at that moment the variable result would not have the real data
+yet; it would be only a Promise (a promise that the data will arrive in the
+future). Since a pending Promise object does not have a .rows property, the
+code would return undefined (or throw an error) and nothing would appear on the
+screen.
+
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+An excellent explanation - and you named the right mechanism. An async function
+always returns a Promise, and await is what "unwraps" that promise and gives
+you the value inside. Without it, you are holding the wrapper.
+
+Let me add one nuance to your reasoning, because this is where Node.js is
+different from more traditional languages: await makes THAT FUNCTION wait, but
+it DOES NOT FREEZE THE WHOLE SERVER. While this request is waiting for Postgres
+to answer, Node is free to serve other requests. That is why Node can handle
+many simultaneous connections with a single thread - it does not sit there
+waiting, it goes and does something else and comes back when the answer
+arrives.
+
+Now, the rubric asks specifically for the FUNCTION THAT CONNECTS TO THE
+DATABASE. And notice that getAllProjects does not open any connection - it only
+uses an object imported on the first line:
+
+    import pool from '../database.js';
+
+That pool comes from src/database.js, lines 9 to 12:
+
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: useSsl ? { rejectUnauthorized: false } : false,
+    });
+
+    export default pool;
+
+Two things in that file interest me, but I will ask only one: why does the
+connection string come from process.env.DATABASE_URL instead of being written
+directly in the code?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+I like that comparison with VoIP. The idea of not blocking processes in Node
+really makes sense when we think about simultaneous requests.
+
+About using process.env.DATABASE_URL instead of writing it directly in the
+code, there are two main reasons: security and deployment flexibility.
+
+1. Security: the connection string contains very sensitive data (my user, my
+password and the address of the database). If I wrote that directly in the code
+(hardcoded) and pushed it to GitHub, anyone on the internet would have full
+access to my database.
+
+2. Flexibility: using an environment variable, the code adapts itself. Locally
+it reads the .env file. When I deploy on Render, the platform injects the
+production URL into the environment settings. In other words, the same
+database.js file works anywhere, and I do not need to change the code when I
+publish the site.
+
+I think that covers the connection and the data. Can we move on to Topic 3,
+about Express and routing?
+
+
+================================================================================
+TOPIC 3 - EXPRESS SERVER LOGIC AND ROUTING
+================================================================================
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+Exactly those two reasons, and you separated them well. And the best part: you
+PRACTICED this, you did not only talk about it. Your repository has a
+.gitignore and a .env.example - which means the file with the real credentials
+stays outside of Git, and .env.example documents WHICH variables exist without
+revealing the values. That is the professional standard, and many students at
+your level still do not do it.
+
+Before we continue, one detail in your database.js is worth recording, line 7:
+
+    const useSsl = process.env.DATABASE_SSL !== 'false';
+
+That is the same flexibility idea applied to SSL: Render requires an encrypted
+connection, a local Postgres usually does not. You solved it with a variable
+instead of commenting and uncommenting a line every time you deploy. Good
+decision.
+
+Let's go to Topic 3: Express server logic and routing.
+
+This snippet is from server.js, lines 31 to 38:
+
+    app.get('/projects', async (req, res, next) => {
+      try {
+        const projects = await getAllProjects();
+        res.render('projects', { title: 'Service Projects', projects });
+      } catch (error) {
+        next(error);
+      }
+    });
+
+Let's start with the mapping, which is the most concrete part.
+
+When somebody types https://yoursite.com/projects in the browser, how does
+Express know that THIS function is the one that must run, and not one of the
+other routes in the file? What exactly is app.get('/projects', ...)
+registering?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+Thank you for the feedback about the .gitignore and the SSL. It is good to know
+that I am applying industry standards correctly.
+
+About the route in Express: app.get('/projects', ...) works like a "map" or a
+road sign for the server. It registers two mandatory things: the HTTP method
+and the path.
+
+When the user types the URL and presses Enter in the browser, the browser makes
+a GET request. Express receives it and reads through the routes that were
+registered. When it finds the exact combination of the .get() method with the
+path '/projects', it knows it found the right address and it fires the callback
+function attached to it.
+
+Once it fetches the data from the database using getAllProjects(), it uses
+res.render('projects', ...) to send everything to the screen. I think this
+res.render is a perfect connection to Topic 4 (EJS and rendering) so we can
+finish the session, right?
+
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+Absolutely right, and you named the two components that form the mapping: HTTP
+METHOD + PATH. It is worth remembering that the combination is what matters -
+an app.post('/projects', ...) would be a completely different route, with the
+same path.
+
+Before we go to EJS, I want to explore one more part of this route, because it
+is the part that separates classroom code from production code. Look at the
+try/catch:
+
+    try {
+      const projects = await getAllProjects();
+      res.render('projects', { title: 'Service Projects', projects });
+    } catch (error) {
+      next(error);
+    }
+
+And at the end of the file, server.js lines 49 to 56, you registered two
+blocks:
+
+    app.use((req, res) => {
+      res.status(404).render('404', { title: 'Page Not Found' });
+    });
+
+    app.use((error, req, res, next) => {
+      console.error(error);
+      res.status(500).render('500', { title: 'Server Error' });
+    });
+
+Imagine this scenario: the database on Render goes down, and somebody visits
+/projects. getAllProjects() throws an exception.
+
+What happens to that exception? Follow its path: it falls into the catch, you
+call next(error) - and then, where does it go? And why is that better than
+simply letting the error crash through?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+Good observation. Following the path of that error really shows the power of
+Express.
+
+When the database goes down and getAllProjects() fails, the exception is caught
+by the catch. By calling next(error), I am telling Express: "something went
+wrong here, abort the current route and pass the ball to whoever knows how to
+handle errors".
+
+Express then skips all the other normal routes and goes straight to look for a
+specific error middleware, which is exactly that app.use at the end of the file
+that receives four parameters: error, req, res, next.
+
+Doing this is much better than letting the error crash through, for two big
+reasons:
+
+1. Experience and security: if the error crashes through, the user might see a
+blank frozen screen or, worse, a screen full of code and folder paths from my
+server, which is terrible for security. With next(error), I render my friendly
+500.ejs view telling the user that there was an internal error.
+
+2. Stability: if an exception is not handled in Node, it can bring the whole
+application down (a crash). By handling the error, I only answer with status
+500 for that specific user, while the server stays up for everybody else.
+
+With that, I think we covered the server logic well. Now can we go to Topic 4
+and talk about how the projects view receives this data in EJS, so we can
+finish?
+
+
+================================================================================
+TOPIC 4 - CLIENT-SIDE RENDERING (EJS TEMPLATES)
+================================================================================
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+You finished that one perfectly. And you caught the most subtle detail in
+Express: the error middleware is recognized BY ITS NUMBER OF PARAMETERS. Four
+parameters (error, req, res, next) and Express treats it as an error handler;
+three and it is a normal middleware. It looks strange at first, but that is
+exactly how it works.
+
+One technical note about your point 2, because it is a distinction worth
+knowing: in an async route, an unhandled error usually does not kill the
+process - it becomes an unhandled promise rejection, and the request just hangs
+until the browser times out. The user sees the page loading forever. The
+practical effect is as bad as the crash you described, and the solution is the
+same one you applied.
+
+Let's go to Topic 4: rendering with EJS.
+
+Let's connect the two ends. In the route, you wrote:
+
+    res.render('projects', { title: 'Service Projects', projects });
+
+And in the template views/projects.ejs, lines 7 to 9:
+
+    <% projects.forEach((project) => { %>
+      <div class="card">
+        <h2><%= project.project_name %></h2>
+
+Notice that the word projects appears in both places, and that in res.render it
+is alone inside the braces (that is the shorthand for projects: projects).
+
+How does the array that getAllProjects() returned from the database reach the
+inside of that forEach in the template? Describe the path this data travels -
+and what does the object { title, projects } represent in that step?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+Here is the last piece of the puzzle. The path the data takes is basically the
+server "packing" the information and EJS "unpacking" it when it builds the
+screen.
+
+That object { title, projects } works exactly as that transport package (the
+view context). As you noticed with the shorthand, it is the equivalent of
+{ title: 'Service Projects', projects: projects }. It groups the variables that
+live on the Express server and sends them to the view layer.
+
+The flow works like this:
+
+1. The route takes the array returned by getAllProjects() and puts it inside
+that object.
+
+2. res.render starts the EJS engine, handing it the projects.ejs file and that
+"package" of data.
+
+3. Behind the scenes, EJS unpacks that object and turns its keys into local
+variables available inside the template.
+
+4. That is why, on line 7 of the file, <% projects.forEach %> works. EJS
+recognizes the projects variable, loops over the array and, for each item, puts
+the value on the screen using the output tag <%= project.project_name %>. After
+it processes the whole loop and builds the final HTML, then the page is sent
+back to the user's browser.
+
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+The flow is described accurately. You used a useful metaphor - "packing" and
+"unpacking" - and the technical name for that package is the VIEW CONTEXT (or
+locals, in Express vocabulary). It is literally a plain JavaScript object whose
+keys become variable names inside the template.
+
+And your step 4 contains a part that many students do not notice: EJS runs
+ENTIRELY ON THE SERVER. When the HTML reaches the browser, there is no <% left
+- only plain HTML, already with the project names written inside. The browser
+never sees the template.
+
+One last detail is missing, and it is what the rubric calls "a specific line of
+EJS syntax". Look at these three lines of your projects.ejs, each one with a
+different delimiter:
+
+    <%- include('partials/header') %>          (line 1)
+    <% projects.forEach((project) => { %>      (line 7)
+    <h2><%= project.project_name %></h2>       (line 9)
+
+They are three similar tags with different behaviours: <%- , <% and <%= .
+
+What is the difference between the <% on line 7 and the <%= on line 9? Here is
+a hint to help you get there: think about what appears in the final HTML in
+each case - does the forEach on line 7 appear on the user's screen?
+
+
+--------------------------------------------------------------------------------
+EDUARJOSE:
+--------------------------------------------------------------------------------
+Great hint. Thinking about the final HTML, the difference becomes very clear:
+it is the difference between "running logic" and "printing data".
+
+The <% tag (line 7) is used purely for control flow and logic on the server,
+like our forEach loop or an if block. EJS runs the JavaScript inside it, but it
+does not print anything in the resulting HTML. The user will never see the code
+of the loop.
+
+The <%= tag (line 9, with the equals sign) is an output tag. The = tells EJS:
+"take the value of this variable (project.project_name), evaluate it and print
+it right here in the HTML". Because of that tag, the real project name (like
+"Green Valley Alliance") appears visible on the screen inside the <h2> tag.
+
+I think with this we successfully covered the four topics of the rubric, right?
+
+
+================================================================================
+SESSION CONCLUSION
+================================================================================
+
+--------------------------------------------------------------------------------
+COACH:
+--------------------------------------------------------------------------------
+Correct and well explained. Let me complete the set of three so you have the
+whole picture:
+
+    <% %>   -> runs logic, prints nothing
+               (the forEach on line 7)
+
+    <%= %>  -> prints the value WITH HTML ESCAPING
+               (<%= project.project_name %>)
+
+    <%- %>  -> prints the value WITHOUT ESCAPING
+               (<%- include('partials/header') %>)
+
+The difference between <%= and <%- is about security. <%= converts dangerous
+characters before printing - if a value from the database contains a script
+tag, it becomes visible text instead of an executable script. That protects you
+from XSS. <%- prints the raw value, and that is why it is used with include:
+there you WANT the HTML of the header to be interpreted as HTML.
+
+The practical rule: use <%= for any data that came from the database or from
+the user; use <%- only for HTML that you control yourself.
+
+With that we covered the four topics, Eduarjose. What caught my attention was
+how the pieces fit together: you started by explaining that project_category
+exists because a project can have several categories, and you finished by
+explaining why the organization name appears on the screen instead of the
+number 3. That is the same data crossing four layers - Postgres, Node, Express
+and EJS. Understanding that whole path is the goal of this course.
+
+Thank you for the conversation, and good work on ServiceConnect.
+
+
+================================================================================
+SUMMARY OF TOPICS COVERED AND CODE SNIPPETS DISCUSSED
+================================================================================
+
+TOPIC 1 - Relational Database Design and Structure
+  Files: W01/src/setup.sql (lines 11-46) and W01/src/models/projects.js (4-9)
+  Discussed: the purpose of the organization, project, category and
+  project_category tables; the one-to-many relationship through a foreign key;
+  the many-to-many relationship through a junction table with a composite
+  primary key; ON DELETE CASCADE and its trade-offs; the UNIQUE constraint as a
+  business rule.
+  SQL query discussed: SELECT with a JOIN between project and organization.
+
+TOPIC 2 - Server-Side Data Access Logic (Node.js)
+  Files: W01/src/models/projects.js and W01/src/database.js (lines 7-14)
+  Discussed: the async function getAllProjects; the role of async/await while
+  waiting for the database answer; Promises and unwrapping the value; Node's
+  non-blocking model; the connection pool; environment variables for
+  credentials and for the SSL flag.
+
+TOPIC 3 - Express Server Logic and Routing
+  File: W01/server.js (lines 31-38 and 49-56)
+  Discussed: route registration by HTTP method + path; dispatching the request
+  to the correct handler; try/catch with next(error); the error middleware
+  identified by its four parameters; rendering the 404 and 500 views.
+
+TOPIC 4 - Client-Side Rendering (EJS Templates)
+  File: W01/views/projects.ejs (lines 1, 7 and 9)
+  Discussed: the context object passed to res.render becoming local variables
+  in the template; server-side rendering; the difference between <% (logic),
+  <%= (escaped output) and <%- (unescaped output); HTML escaping as a defence
+  against XSS.
+
+================================================================================
+END OF TRANSCRIPT
+================================================================================

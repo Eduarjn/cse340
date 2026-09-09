@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+
+<h1><%= project.title %></h1>
+
+<div class="card">
+  <p><%= project.description %></p>
+  <p>Date: <%= project.date.toISOString().slice(0, 10) %></p>
+  <p>Location: <%= project.location %></p>
+  <p>
+    Hosted by
+    <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a>
+  </p>
+</div>
+
+<a href="/projects" class="button">Back to upcoming projects</a>
+
+<%- include('partials/footer') %>

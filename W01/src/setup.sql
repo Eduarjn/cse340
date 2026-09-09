@@ -55,7 +55,10 @@ INSERT INTO project (project_name, description, date, location, schedule, organi
 ('River Cleanup Day', 'Clear trash from the riverbank and restore native plants.', '2026-10-10', 'Riverfront Park, Provo', 'Saturday morning - 4 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Green Valley Alliance')),
 ('After-School Reading Buddy', 'Read one on one with elementary students after class.', '2026-10-14', 'Lincoln Elementary School, Orem', 'Weekday afternoons - 2 hours per week', (SELECT organization_id FROM organization WHERE organization_name = 'Readers United')),
 ('Food Pantry Sorting', 'Sort and box donated food for weekly family pickups.', '2026-10-17', 'Neighbors First Warehouse, Provo', 'Flexible shifts - 3 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Neighbors First')),
-('Community Blood Drive', 'Greet donors and staff the check-in table at the mobile unit.', '2026-10-24', 'City Library Plaza, Springville', 'Monthly - 1 hour', (SELECT organization_id FROM organization WHERE organization_name = 'Wellness Together'));
+('Community Blood Drive', 'Greet donors and staff the check-in table at the mobile unit.', '2026-10-24', 'City Library Plaza, Springville', 'Monthly - 1 hour', (SELECT organization_id FROM organization WHERE organization_name = 'Wellness Together')),
+('Park Tree Planting', 'Plant native saplings along the new greenway trail.', '2026-11-07', 'Greenway Trailhead, Provo', 'Saturday morning - 3 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Green Valley Alliance')),
+('Winter Book Drive', 'Collect and label donated books for the holiday giveaway.', '2026-11-15', 'Readers United Office, Orem', 'Weekday evenings - 2 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Readers United')),
+('Shelter Meal Service', 'Prepare and serve dinner at the family shelter.', '2026-11-21', 'Neighbors First Shelter, Provo', 'Friday evening - 4 hours', (SELECT organization_id FROM organization WHERE organization_name = 'Neighbors First'));
 
 INSERT INTO category (category_name, description) VALUES
 ('Environmental', 'Park cleanups, tree planting, and sustainability projects.'),
@@ -69,4 +72,7 @@ INSERT INTO project_category (project_id, category_id) VALUES
 ((SELECT project_id FROM project WHERE project_name = 'River Cleanup Day'), (SELECT category_id FROM category WHERE category_name = 'Community Service')),
 ((SELECT project_id FROM project WHERE project_name = 'After-School Reading Buddy'), (SELECT category_id FROM category WHERE category_name = 'Educational')),
 ((SELECT project_id FROM project WHERE project_name = 'Food Pantry Sorting'), (SELECT category_id FROM category WHERE category_name = 'Community Service')),
-((SELECT project_id FROM project WHERE project_name = 'Community Blood Drive'), (SELECT category_id FROM category WHERE category_name = 'Health and Wellness'));
+((SELECT project_id FROM project WHERE project_name = 'Community Blood Drive'), (SELECT category_id FROM category WHERE category_name = 'Health and Wellness')),
+((SELECT project_id FROM project WHERE project_name = 'Park Tree Planting'), (SELECT category_id FROM category WHERE category_name = 'Environmental')),
+((SELECT project_id FROM project WHERE project_name = 'Winter Book Drive'), (SELECT category_id FROM category WHERE category_name = 'Educational')),
+((SELECT project_id FROM project WHERE project_name = 'Shelter Meal Service'), (SELECT category_id FROM category WHERE category_name = 'Community Service'));

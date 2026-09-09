@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+
+<h1>Upcoming Service Projects</h1>
+<p>The next five opportunities you can join.</p>
+
+<div class="grid">
+  <% projects.forEach((project) => { %>
+    <div class="card">
+      <h2><a href="/project/<%= project.project_id %>"><%= project.title %></a></h2>
+      <p>
+        Hosted by
+        <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a>
+      </p>
+      <p>Date: <%= project.date.toISOString().slice(0, 10) %></p>
+      <p>Location: <%= project.location %></p>
+    </div>
+  <% }); %>
+</div>
+
+<%- include('partials/footer') %>
