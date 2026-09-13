@@ -40,4 +40,15 @@ const getProjectDetails = async (id) => {
   return result.rows[0];
 };
 
-export { getAllProjects, getUpcomingProjects, getProjectDetails };
+// Every category one project is filed under, so the details page can tag it.
+const getCategoriesByProject = async (id) => {
+  const sql = `SELECT c.category_id, c.category_name
+               FROM category c
+               JOIN project_category pc ON pc.category_id = c.category_id
+               WHERE pc.project_id = $1
+               ORDER BY c.category_name ASC`;
+  const result = await pool.query(sql, [id]);
+  return result.rows;
+};
+
+export { getAllProjects, getUpcomingProjects, getProjectDetails, getCategoriesByProject };

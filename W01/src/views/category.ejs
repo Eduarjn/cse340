@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+
+<h1><%= category.category_name %></h1>
+
+<div class="card">
+  <p><%= category.description %></p>
+</div>
+
+<h2>Service projects</h2>
+
+<div class="grid">
+  <% projects.forEach((project) => { %>
+    <div class="card">
+      <h3><a href="/project/<%= project.project_id %>"><%= project.title %></a></h3>
+      <p>Date: <%= project.date.toISOString().slice(0, 10) %></p>
+      <p>Location: <%= project.location %></p>
+    </div>
+  <% }); %>
+</div>
+
+<a href="/categories" class="button">Back to categories</a>
+
+<%- include('partials/footer') %>

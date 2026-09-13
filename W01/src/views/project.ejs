@@ -10,6 +10,13 @@
     Hosted by
     <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a>
   </p>
+  <ul class="tags" aria-label="Categories">
+    <% categories.forEach((category) => { %>
+      <li>
+        <a class="tag" href="/category/<%= category.category_id %>"><%= category.category_name %></a>
+      </li>
+    <% }); %>
+  </ul>
 </div>
 
 <a href="/projects" class="button">Back to upcoming projects</a>

@@ -1,4 +1,8 @@
-import { getUpcomingProjects, getProjectDetails } from '../models/projects.js';
+import {
+  getUpcomingProjects,
+  getProjectDetails,
+  getCategoriesByProject,
+} from '../models/projects.js';
 
 // How many upcoming projects the list page shows. The model accepts any number,
 // so changing this constant is enough to change the page.
@@ -22,7 +26,8 @@ const showProjectDetailsPage = async (req, res, next) => {
       return res.status(404).render('404', { title: 'Page Not Found' });
     }
 
-    res.render('project', { title: project.title, project });
+    const categories = await getCategoriesByProject(req.params.id);
+    res.render('project', { title: project.title, project, categories });
   } catch (error) {
     next(error);
   }
