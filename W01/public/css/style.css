@@ -145,6 +145,19 @@ main > p {
   margin: 0;
 }
 
+.card h2 a,
+.card h3 a,
+.card p a {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.card h2 a:hover,
+.card h3 a:hover,
+.card p a:hover {
+  color: var(--green-light);
+}
+
 .tags {
   list-style: none;
   margin: 1.25rem 0 0;
