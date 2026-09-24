@@ -27,4 +27,28 @@ const getProjectsByOrganization = async (id) => {
   return result.rows;
 };
 
-export { getAllOrganizations, getOrganizationDetails, getProjectsByOrganization };
+// Inserts a new organization and hands back the new id, so the controller can
+// redirect straight to the page of what was just created.
+const createOrganization = async (organizationName, description, contactEmail, imageUrl) => {
+  const sql = `INSERT INTO organization (organization_name, description, contact_email, image_url)
+               VALUES ($1, $2, $3, $4)
+               RETURNING organization_id`;
+  const result = await pool.query(sql, [organizationName, description, contactEmail, imageUrl]);
+  return result.rows[0].organization_id;
+};
+
+const updateOrganization = async (id, organizationName, description, contactEmail, imageUrl) => {
+  const sql = `UPDATE organization
+               SET organization_name = $2, description = $3,
+                   contact_email = $4, image_url = $5
+               WHERE organization_id = $1`;
+  await pool.query(sql, [id, organizationName, description, contactEmail, imageUrl]);
+};
+
+export {
+  getAllOrganizations,
+  getOrganizationDetails,
+  getProjectsByOrganization,
+  createOrganization,
+  updateOrganization,
+};

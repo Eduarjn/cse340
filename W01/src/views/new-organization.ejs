@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+
+<h1>Add a new organization</h1>
+
+<div class="card">
+  <%# The minimum lengths are checked only on the server, so this form can be
+      used to test that the server validates on its own. %>
+  <form action="/new-organization" method="post" class="form">
+    <div class="form-field">
+      <label for="organizationName">Organization name <span class="required">*</span></label>
+      <input type="text" id="organizationName" name="organizationName"
+             value="<%= formData.organizationName || '' %>"
+             maxlength="100" required>
+    </div>
+
+    <div class="form-field">
+      <label for="description">Description <span class="required">*</span></label>
+      <textarea id="description" name="description" rows="4"
+                maxlength="500" required><%= formData.description || '' %></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="contactEmail">Contact email <span class="required">*</span></label>
+      <input type="email" id="contactEmail" name="contactEmail"
+             value="<%= formData.contactEmail || '' %>"
+             maxlength="255" required>
+    </div>
+
+    <div class="form-field">
+      <label for="imageUrl">Logo path</label>
+      <input type="text" id="imageUrl" name="imageUrl"
+             value="<%= formData.imageUrl || '' %>"
+             maxlength="255" placeholder="/images/example.svg">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="button">Add organization</button>
+      <a href="/organizations" class="button button-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

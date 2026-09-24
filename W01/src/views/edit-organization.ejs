@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+
+<% const name = formData.organizationName ?? organization.organization_name; %>
+<% const description = formData.description ?? organization.description; %>
+<% const contactEmail = formData.contactEmail ?? organization.contact_email; %>
+<% const imageUrl = formData.imageUrl ?? (organization.image_url || ''); %>
+
+<h1>Edit organization</h1>
+
+<div class="card">
+  <form action="/edit-organization/<%= organization.organization_id %>" method="post" class="form">
+    <div class="form-field">
+      <label for="organizationName">Organization name <span class="required">*</span></label>
+      <input type="text" id="organizationName" name="organizationName"
+             value="<%= name %>"
+             maxlength="100" required>
+    </div>
+
+    <div class="form-field">
+      <label for="description">Description <span class="required">*</span></label>
+      <textarea id="description" name="description" rows="4"
+                maxlength="500" required><%= description %></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="contactEmail">Contact email <span class="required">*</span></label>
+      <input type="email" id="contactEmail" name="contactEmail"
+             value="<%= contactEmail %>"
+             maxlength="255" required>
+    </div>
+
+    <div class="form-field">
+      <label for="imageUrl">Logo path</label>
+      <input type="text" id="imageUrl" name="imageUrl"
+             value="<%= imageUrl %>"
+             maxlength="255" placeholder="/images/example.svg">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="button">Save changes</button>
+      <a href="/organization/<%= organization.organization_id %>" class="button button-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

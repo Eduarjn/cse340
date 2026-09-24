@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+
+<h1>Categories for <%= project.title %></h1>
+
+<div class="card">
+  <p>Check every category this project belongs to, then save.</p>
+
+  <form action="/assign-categories/<%= project.project_id %>" method="post" class="form">
+    <fieldset class="form-field">
+      <legend>Categories</legend>
+
+      <% categories.forEach((category) => { %>
+        <%# a box starts checked when the project is already filed under it %>
+        <div class="checkbox-row">
+          <input type="checkbox"
+                 id="category-<%= category.category_id %>"
+                 name="categoryIds"
+                 value="<%= category.category_id %>"
+                 <%= assignedIds.includes(category.category_id) ? 'checked' : '' %>>
+          <label for="category-<%= category.category_id %>"><%= category.category_name %></label>
+        </div>
+      <% }); %>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" class="button">Save categories</button>
+      <a href="/project/<%= project.project_id %>" class="button button-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

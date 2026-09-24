@@ -29,9 +29,10 @@ const getUpcomingProjects = async (numberOfProjects) => {
 };
 
 // Returns a single project, or undefined when the id does not exist.
+// The schedule comes along because the edit form has to show it.
 const getProjectDetails = async (id) => {
   const sql = `SELECT p.project_id, p.project_name AS title, p.description,
-                      p.date, p.location,
+                      p.date, p.location, p.schedule,
                       p.organization_id, o.organization_name
                FROM project p
                JOIN organization o ON o.organization_id = p.organization_id
@@ -51,4 +52,44 @@ const getCategoriesByProject = async (id) => {
   return result.rows;
 };
 
-export { getAllProjects, getUpcomingProjects, getProjectDetails, getCategoriesByProject };
+// Inserts a new project and hands back the new id, so the controller can
+// redirect straight to the page of what was just created.
+const createProject = async (projectName, description, date, location, schedule, organizationId) => {
+  const sql = `INSERT INTO project (project_name, description, date, location, schedule, organization_id)
+               VALUES ($1, $2, $3, $4, $5, $6)
+               RETURNING project_id`;
+  const result = await pool.query(sql, [
+    projectName,
+    description,
+    date,
+    location,
+    schedule,
+    organizationId,
+  ]);
+  return result.rows[0].project_id;
+};
+
+const updateProject = async (id, projectName, description, date, location, schedule, organizationId) => {
+  const sql = `UPDATE project
+               SET project_name = $2, description = $3, date = $4,
+                   location = $5, schedule = $6, organization_id = $7
+               WHERE project_id = $1`;
+  await pool.query(sql, [
+    id,
+    projectName,
+    description,
+    date,
+    location,
+    schedule,
+    organizationId,
+  ]);
+};
+
+export {
+  getAllProjects,
+  getUpcomingProjects,
+  getProjectDetails,
+  getCategoriesByProject,
+  createProject,
+  updateProject,
+};

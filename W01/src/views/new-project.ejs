@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+<h1>Add a new service project</h1>
+
+<div class="card">
+  <form action="/new-project" method="post" class="form">
+    <div class="form-field">
+      <label for="projectName">Project name <span class="required">*</span></label>
+      <input type="text" id="projectName" name="projectName"
+             value="<%= formData.projectName || '' %>"
+             maxlength="100" required>
+    </div>
+
+    <div class="form-field">
+      <label for="description">Description <span class="required">*</span></label>
+      <textarea id="description" name="description" rows="4"
+                maxlength="500" required><%= formData.description || '' %></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="date">Date <span class="required">*</span></label>
+      <input type="date" id="date" name="date"
+             value="<%= formData.date || '' %>" required>
+    </div>
+
+    <div class="form-field">
+      <label for="location">Location <span class="required">*</span></label>
+      <input type="text" id="location" name="location"
+             value="<%= formData.location || '' %>"
+             maxlength="150" required>
+    </div>
+
+    <div class="form-field">
+      <label for="schedule">Schedule <span class="required">*</span></label>
+      <input type="text" id="schedule" name="schedule"
+             value="<%= formData.schedule || '' %>"
+             maxlength="100" placeholder="Saturday morning - 4 hours" required>
+    </div>
+
+    <div class="form-field">
+      <label for="organizationId">Host organization <span class="required">*</span></label>
+      <select id="organizationId" name="organizationId" required>
+        <option value="" disabled <%= formData.organizationId ? '' : 'selected' %>>
+          Select an organization ...
+        </option>
+        <% organizations.forEach((organization) => { %>
+          <option value="<%= organization.organization_id %>"
+            <%= String(formData.organizationId) === String(organization.organization_id) ? 'selected' : '' %>>
+            <%= organization.organization_name %>
+          </option>
+        <% }); %>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="button">Add project</button>
+      <a href="/projects" class="button button-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

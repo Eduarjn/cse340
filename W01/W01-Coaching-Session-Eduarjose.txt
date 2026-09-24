@@ -1,0 +1,277 @@
+W01 Coaching Session: Server-side Programming
+Student: Eduarjose Nazareth Fajardo Cadenas
+Course: CSE 340
+Project repository: https://github.com/Eduarjn/cse340 (W01)
+Deployed site: https://cse340-w01-s9b7.onrender.com
+
+================================================================
+AI Coach: Welcome! Just to be clear from the start, this is a
+coaching session, not a test. It is perfectly okay - and even
+encouraged - to say "I don't know" or "I made a mistake." That's
+the fastest way we'll learn today.
+
+AI Coach: What is your name?
+
+Student: My name is Eduarjose.
+
+================================================================
+TOPIC 1: EXPRESS ROUTING
+================================================================
+
+AI Coach: Thank you, Eduarjose. Let's start with Express Routing.
+Please paste the relevant code from your server.js file that
+defines one of your routes.
+
+Student:
+
+    app.get('/categories', (req, res) => {
+      res.render('categories', { title: 'Service Project Categories' });
+    });
+
+AI Coach: Can you explain what this route does and why you chose
+to use this approach?
+
+Student: This route handles HTTP GET requests that go to the
+"/categories" URL. I chose to use app.get() because it is the
+standard and most efficient way in Express to listen for user
+requests when they visit a specific page on the browser.
+
+AI Coach: What happens when a user sends a request to this route?
+
+Student: When a user accesses "/categories", the server receives
+the request (req). Then, it uses the response object (res) to call
+the render method. This method compiles the "categories.ejs"
+template and sends the final HTML to the user's browser. It also
+passes a JavaScript object containing the title variable so the
+page displays the correct name in the browser tab.
+
+================================================================
+TOPIC 2: JAVASCRIPT LANGUAGE PRINCIPLES
+================================================================
+
+AI Coach: Now let's talk about JavaScript. Please paste a
+meaningful function or logic snippet from your project.
+
+Student:
+
+    import path from 'node:path';
+    import { fileURLToPath } from 'node:url';
+
+    const currentDir = path.dirname(fileURLToPath(import.meta.url));
+
+AI Coach: Can you explain what this code does and which JavaScript
+concepts are being used?
+
+Student: This code calculates the absolute path of the current
+directory. Because I am using modern ES Modules (ESM) with the
+import syntax instead of the older CommonJS require, the
+traditional __dirname variable is not available. Here, I am using
+modern JavaScript concepts like ES modules (import), destructuring
+({ fileURLToPath }), and const to declare a variable that will not
+be reassigned. This setup is necessary so my Express app can find
+the "views" and "public" folders correctly.
+
+================================================================
+TOPIC 3: EJS PARTIALS AND PAGES
+================================================================
+
+AI Coach: Let's move to EJS. Please paste an EJS page or partial
+from your project.
+
+Student:
+
+    <%- include('partials/header') %>
+
+    <h1>Service Project Categories</h1>
+    <p>Find a way to give back to your community.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Environmental</h2>
+        <p>Park cleanups, tree planting, and sustainability projects.</p>
+      </div>
+
+      <div class="card">
+        <h2>Educational</h2>
+        <p>Tutoring, reading programs, and school supply drives.</p>
+      </div>
+
+      <div class="card">
+        <h2>Community Service</h2>
+        <p>Food banks, homeless shelters, and neighborhood revitalization.</p>
+      </div>
+
+      <div class="card">
+        <h2>Health and Wellness</h2>
+        <p>Blood drives, fitness events, and mental health awareness campaigns.</p>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+AI Coach: What is the purpose of this EJS partial, and how does it
+help organize your application?
+
+Student: The <%- include() %> tags allow me to insert the code from
+header.ejs and footer.ejs directly into this categories page. This
+helps organize my application by preventing code duplication.
+Instead of copying and pasting the HTML <head>, navigation menu,
+and footer on every single page, I write them once in the partial
+files. If I need to add a new link to the menu later, I only have
+to update one file, and it changes across the whole site.
+
+================================================================
+TOPIC 4: FRONTEND CSS
+================================================================
+
+AI Coach: Great. Finally, let's discuss frontend CSS to complete
+our session. Please paste a relevant CSS snippet from your public
+folder.
+
+Student:
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.25rem;
+    }
+
+AI Coach: How does this CSS style affect the elements on your page?
+
+Student: This CSS snippet is used to create a responsive layout for
+the category cards. By using CSS Grid with repeat(auto-fit,
+minmax(250px, 1fr)), the cards will automatically adjust their size
+and wrap to the next line depending on the screen size. This means
+the layout will look great on both a large desktop monitor and a
+small mobile phone screen. The grid itself does not need media
+queries to reflow; I use one media query only to adjust the
+navigation layout and the h1 size on small screens.
+
+================================================================
+DEEPER DISCUSSION AND SELF-CORRECTION
+================================================================
+
+AI Coach: Good work so far, Eduarjose. Before we go deeper, I want
+to revisit something you mentioned in Topic 2. You described
+import { fileURLToPath } from 'node:url' as destructuring. That is
+a very common confusion, and it makes total sense - the syntax
+looks almost identical.
+
+But they are different language constructs. Real destructuring
+would be something like const { dirname } = path, which happens at
+runtime, on an object that already exists in memory. Whereas
+import { fileURLToPath } is a named import: JavaScript resolves it
+BEFORE the code runs, at compile time, by looking at what the
+node:url module declares as its exports.
+
+That difference has an interesting practical consequence.
+
+Question: Knowing that import is resolved before the code executes,
+what do you think would happen if you tried to write something like
+this?
+
+    const nomeDoModulo = 'node:url';
+    import { fileURLToPath } from nomeDoModulo;
+
+Would it work? And why?
+
+Student: Very well observed! I really did confuse the two things
+because of the identical syntax with the curly braces {}. The
+difference between named import (compile time) and destructuring
+(runtime) makes total sense. Thank you for the correction.
+
+About your question: it would not work. Since the import is static
+and resolved at compile time, the JavaScript engine requires the
+module path to be a fixed string literal. If I try to use the
+variable nomeDoModulo, JavaScript would only discover the value of
+that variable at runtime, which is too late for the import
+declaration. This would generate an error (SyntaxError). I know
+that if we needed something like this at runtime, we would have to
+use dynamic import with the import() function, and not the static
+declaration at the top of the file.
+
+AI Coach: Complete and precise answer. And you went beyond what I
+asked - you brought up dynamic import() on your own, which is
+exactly the correct way out when the module path is only known at
+runtime. That shows you did not memorize the rule, you understood
+the mechanism behind it. One fine detail: depending on the
+environment, the error may appear during module parsing, before any
+line executes at all - which reinforces your point that it is
+"too late."
+
+AI Coach: Let's go deeper into Topic 1, then. Looking at the end of
+your server.js:
+
+    app.get('/categories', (req, res) => {
+      res.render('categories', { title: 'Service Project Categories' });
+    });
+
+    app.use((req, res) => {
+      res.status(404).render('404', { title: 'Page Not Found' });
+    });
+
+That app.use() at the end has no path specified - it responds to
+any request that reaches it. And it works: I tested your site on
+Render and /pagina-inexistente returns 404 correctly, while
+/categories returns 200.
+
+Question: What would happen if you moved that app.use() block to
+BEFORE your routes, right after express.static? Why does its
+position in the file matter?
+
+Student: If I moved that app.use() block to before my app.get
+routes, the site would break. Any page I tried to access (like /,
+/categories or /projects) would return the 404 page.
+
+This happens because Express processes middlewares and routes
+sequentially, exactly in the order they are written in the file
+(from top to bottom). Since this app.use() has no path specified,
+it acts as a wildcard and matches absolutely any request.
+
+If it is at the top, it will intercept all requests, return the
+res.status(404).render(...) and end the request-response cycle
+right there. The request would never make it down to be evaluated
+by the correct routes.
+
+That is why the position matters a lot: the 404 handler must
+necessarily be the last thing in the file. It works as a safety net
+(catch-all) that only captures the request if it has fallen through
+all the valid routes above it without matching any of them.
+
+AI Coach: Exactly right. And you used an important expression:
+"end the request-response cycle right there." That is the key to
+the Express middleware model - what Express keeps internally is a
+stack of functions, and each request travels down through it in
+registration order.
+
+That brings me to the piece you described without naming it. Notice
+that your 404 handler receives only (req, res), but Express
+middlewares can receive a third parameter:
+
+    app.use((req, res, next) => {
+      // ...
+      next();
+    });
+
+Question: What is the role of that next, and why does it make sense
+that your 404 handler is one of the few places where you do NOT
+want to call it?
+
+Student: The next() basically serves to pass the ball to the next
+route or function in the Express queue. I don't use it in the 404
+because the 404 is already the end of everything. Since I already
+sent the error screen to the user there, the process is over. If I
+put next() there, the server would try to keep processing the
+request and it would break, giving that error of trying to send the
+response (headers) twice.
+
+AI Coach: That is correct, and well explained in your own words.
+The error you are describing is exactly "Cannot set headers after
+they are sent to the client" - Node raises it because the HTTP
+response has already been committed and its headers can no longer
+be modified. Your 404 closes the door, and that is precisely why it
+does not call next().
+
+================================================================
+END OF SESSION
+================================================================

@@ -20,3 +20,15 @@
   </header>
 
   <main>
+
+    <%# Anything a previous request left on the session is printed once here. %>
+    <% const messages = flash(); %>
+    <% Object.keys(messages).forEach((type) => { %>
+      <% if (messages[type].length > 0) { %>
+        <div class="alert alert-<%= type %>" role="status">
+          <% messages[type].forEach((message) => { %>
+            <p><%= message %></p>
+          <% }); %>
+        </div>
+      <% } %>
+    <% }); %>

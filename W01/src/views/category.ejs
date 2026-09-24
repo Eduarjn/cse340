@@ -18,6 +18,9 @@
   <% }); %>
 </div>
 
-<a href="/categories" class="button">Back to categories</a>
+<div class="form-actions">
+  <a href="/edit-category/<%= category.category_id %>" class="button">Edit this category</a>
+  <a href="/categories" class="button button-secondary">Back to categories</a>
+</div>
 
 <%- include('partials/footer') %>

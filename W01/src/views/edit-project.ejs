@@ -1,0 +1,66 @@
+<%- include('partials/header') %>
+
+<% const name = formData.projectName ?? project.title; %>
+<% const description = formData.description ?? project.description; %>
+<%# an <input type="date"> only accepts yyyy-mm-dd %>
+<% const date = formData.date ?? project.date.toISOString().slice(0, 10); %>
+<% const location = formData.location ?? project.location; %>
+<% const schedule = formData.schedule ?? project.schedule; %>
+<% const organizationId = formData.organizationId ?? project.organization_id; %>
+
+<h1>Edit service project</h1>
+
+<div class="card">
+  <form action="/edit-project/<%= project.project_id %>" method="post" class="form">
+    <div class="form-field">
+      <label for="projectName">Project name <span class="required">*</span></label>
+      <input type="text" id="projectName" name="projectName"
+             value="<%= name %>"
+             maxlength="100" required>
+    </div>
+
+    <div class="form-field">
+      <label for="description">Description <span class="required">*</span></label>
+      <textarea id="description" name="description" rows="4"
+                maxlength="500" required><%= description %></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="date">Date <span class="required">*</span></label>
+      <input type="date" id="date" name="date" value="<%= date %>" required>
+    </div>
+
+    <div class="form-field">
+      <label for="location">Location <span class="required">*</span></label>
+      <input type="text" id="location" name="location"
+             value="<%= location %>"
+             maxlength="150" required>
+    </div>
+
+    <div class="form-field">
+      <label for="schedule">Schedule <span class="required">*</span></label>
+      <input type="text" id="schedule" name="schedule"
+             value="<%= schedule %>"
+             maxlength="100" required>
+    </div>
+
+    <div class="form-field">
+      <label for="organizationId">Host organization <span class="required">*</span></label>
+      <select id="organizationId" name="organizationId" required>
+        <% organizations.forEach((organization) => { %>
+          <option value="<%= organization.organization_id %>"
+            <%= String(organizationId) === String(organization.organization_id) ? 'selected' : '' %>>
+            <%= organization.organization_name %>
+          </option>
+        <% }); %>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="button">Save changes</button>
+      <a href="/project/<%= project.project_id %>" class="button button-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
