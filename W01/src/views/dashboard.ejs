@@ -1,0 +1,37 @@
+<%- include('partials/header') %>
+
+<h1>Dashboard</h1>
+
+<div class="card">
+  <h2>Your account</h2>
+  <p><strong>Name:</strong> <%= name %></p>
+  <p><strong>Email:</strong> <%= email %></p>
+  <p><strong>Role:</strong> <%= role %></p>
+</div>
+
+<div class="card">
+  <h2>Browse the site</h2>
+  <div class="form-actions">
+    <a href="/organizations" class="button button-secondary">Organizations</a>
+    <a href="/projects" class="button button-secondary">Service projects</a>
+    <a href="/categories" class="button button-secondary">Categories</a>
+  </div>
+</div>
+
+<%# Everything below is for administrators. A standard user never sees these
+    links, and the routes behind them are closed to them as well. %>
+<% if (user && user.role_name === 'admin') { %>
+  <div class="card">
+    <h2>Administration</h2>
+    <p>These tools are available to you because your account has the admin role.</p>
+
+    <div class="form-actions">
+      <a href="/users" class="button">Registered users</a>
+      <a href="/new-organization" class="button">Add an organization</a>
+      <a href="/new-project" class="button">Add a service project</a>
+      <a href="/new-category" class="button">Add a category</a>
+    </div>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+
+<h1>Registered users</h1>
+
+<div class="card">
+  <p>
+    Every account registered on ServiceConnect. This page is restricted to the
+    admin role.
+  </p>
+
+  <table class="users-table">
+    <caption>All registered users</caption>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach((registered) => { %>
+        <tr>
+          <th scope="row"><%= registered.name %></th>
+          <td><%= registered.email %></td>
+          <td>
+            <span class="role role-<%= registered.role_name %>"><%= registered.role_name %></span>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-actions">
+  <a href="/dashboard" class="button button-secondary">Back to the dashboard</a>
+</div>
+
+<%- include('partials/footer') %>

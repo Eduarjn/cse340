@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import routes from './src/routes.js';
 import flash from './src/middleware/flash.js';
-import { ensureDatabase } from './src/init-db.js';
+import { ensureDatabase, ensureAuthTables, ensureAdminUser } from './src/init-db.js';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -31,6 +31,14 @@ app.use(session({
 
 app.use(flash);
 
+// The signed in user, handed to every view so the templates can decide which
+// links to show without each controller passing it along.
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  res.locals.isLoggedIn = Boolean(req.session.user);
+  next();
+});
+
 // Every page route lives in src/routes.js, which maps each path to a controller.
 app.use('/', routes);
 
@@ -48,6 +56,12 @@ app.use((error, req, res, next) => {
 try {
   const created = await ensureDatabase();
   console.log(created ? 'Database created and seeded.' : 'Database already set up.');
+
+  // Additive, so a database built before the login feature gains the two
+  // tables without losing the organizations and projects already in it.
+  await ensureAuthTables();
+  const adminCreated = await ensureAdminUser();
+  console.log(adminCreated ? 'Admin account created.' : 'Admin account already present.');
 } catch (error) {
   console.error('Could not prepare the database:', error.message);
 }

@@ -20,8 +20,10 @@
 </div>
 
 <div class="form-actions">
-  <a href="/edit-project/<%= project.project_id %>" class="button">Edit this project</a>
-  <a href="/assign-categories/<%= project.project_id %>" class="button">Update categories</a>
+  <% if (user && user.role_name === 'admin') { %>
+    <a href="/edit-project/<%= project.project_id %>" class="button">Edit this project</a>
+    <a href="/assign-categories/<%= project.project_id %>" class="button">Update categories</a>
+  <% } %>
   <a href="/projects" class="button button-secondary">Back to upcoming projects</a>
 </div>
 

@@ -23,7 +23,9 @@
 </div>
 
 <div class="form-actions">
-  <a href="/edit-organization/<%= organization.organization_id %>" class="button">Edit this organization</a>
+  <% if (user && user.role_name === 'admin') { %>
+    <a href="/edit-organization/<%= organization.organization_id %>" class="button">Edit this organization</a>
+  <% } %>
   <a href="/organizations" class="button button-secondary">Back to organizations</a>
 </div>
 

@@ -76,3 +76,27 @@ INSERT INTO project_category (project_id, category_id) VALUES
 ((SELECT project_id FROM project WHERE project_name = 'Park Tree Planting'), (SELECT category_id FROM category WHERE category_name = 'Environmental')),
 ((SELECT project_id FROM project WHERE project_name = 'Winter Book Drive'), (SELECT category_id FROM category WHERE category_name = 'Educational')),
 ((SELECT project_id FROM project WHERE project_name = 'Shelter Meal Service'), (SELECT category_id FROM category WHERE category_name = 'Community Service'));
+
+-- =====================================================================
+-- Authentication: roles and users
+-- =====================================================================
+
+-- Each user holds exactly one role; a role is held by many users.
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INT NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES roles (role_id)
+);
+
+INSERT INTO roles (role_name) VALUES ('admin'), ('user');
+
+-- The admin account for the QA team is seeded by src/init-db.js, because the
+-- password has to be hashed with bcrypt before it can be stored.

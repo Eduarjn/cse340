@@ -19,7 +19,9 @@
 </div>
 
 <div class="form-actions">
-  <a href="/edit-category/<%= category.category_id %>" class="button">Edit this category</a>
+  <% if (user && user.role_name === 'admin') { %>
+    <a href="/edit-category/<%= category.category_id %>" class="button">Edit this category</a>
+  <% } %>
   <a href="/categories" class="button button-secondary">Back to categories</a>
 </div>
 

@@ -343,3 +343,49 @@ button.button {
 .button-secondary:hover {
   background-color: #e4efec;
 }
+
+/* ---------- Users table ---------- */
+
+.users-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.users-table caption {
+  caption-side: bottom;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding-top: 0.75rem;
+  text-align: left;
+}
+
+.users-table th,
+.users-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+}
+
+.users-table thead th {
+  background-color: var(--green);
+  border-bottom: 0;
+  color: #fff;
+}
+
+.role {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.15rem 0.7rem;
+}
+
+.role-admin {
+  background-color: #e4efec;
+  color: #0a4e42;
+}
+
+.role-user {
+  background-color: #eef1f4;
+  color: #3d4b59;
+}
