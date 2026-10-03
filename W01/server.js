@@ -4,7 +4,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import routes from './src/routes.js';
 import flash from './src/middleware/flash.js';
-import { ensureDatabase, ensureAuthTables, ensureAdminUser } from './src/init-db.js';
+import {
+  ensureDatabase,
+  ensureAuthTables,
+  ensureVolunteerTable,
+  ensureAdminUser,
+} from './src/init-db.js';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -60,6 +65,7 @@ try {
   // Additive, so a database built before the login feature gains the two
   // tables without losing the organizations and projects already in it.
   await ensureAuthTables();
+  await ensureVolunteerTable();
   const adminCreated = await ensureAdminUser();
   console.log(adminCreated ? 'Admin account created.' : 'Admin account already present.');
 } catch (error) {

@@ -42,6 +42,10 @@ import {
   showDashboard,
   showUsersPage,
 } from './controllers/users.js';
+import {
+  processAddVolunteer,
+  processRemoveVolunteer,
+} from './controllers/volunteers.js';
 
 const router = express.Router();
 
@@ -87,5 +91,9 @@ router.post('/edit-category/:id', requireRole('admin'), categoryValidation, proc
 // Which categories a project belongs to
 router.get('/assign-categories/:projectId', requireRole('admin'), showAssignCategoriesForm);
 router.post('/assign-categories/:projectId', requireRole('admin'), processAssignCategoriesForm);
+
+// Volunteering: any signed in user, admin or not
+router.post('/volunteer/:projectId', requireLogin, processAddVolunteer);
+router.post('/remove-volunteer/:projectId', requireLogin, processRemoveVolunteer);
 
 export default router;

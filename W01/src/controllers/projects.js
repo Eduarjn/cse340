@@ -7,6 +7,7 @@ import {
   updateProject,
 } from '../models/projects.js';
 import { getAllOrganizations } from '../models/organizations.js';
+import { isVolunteering, getVolunteersByProject } from '../models/volunteers.js';
 
 // How many upcoming projects the list page shows. The model accepts any number,
 // so changing this constant is enough to change the page.
@@ -73,7 +74,21 @@ const showProjectDetailsPage = async (req, res, next) => {
     }
 
     const categories = await getCategoriesByProject(req.params.id);
-    res.render('project', { title: project.title, project, categories });
+    const volunteers = await getVolunteersByProject(req.params.id);
+
+    // Only a signed in visitor can be volunteering, so the lookup is skipped
+    // for everyone else.
+    const signedUp = req.session.user
+      ? await isVolunteering(req.session.user.user_id, req.params.id)
+      : false;
+
+    res.render('project', {
+      title: project.title,
+      project,
+      categories,
+      volunteers,
+      signedUp,
+    });
   } catch (error) {
     next(error);
   }

@@ -1,5 +1,6 @@
 import { body, validationResult } from 'express-validator';
 import { createUser, findUserByEmail, authenticateUser, getAllUsers } from '../models/users.js';
+import { getProjectsByVolunteer } from '../models/volunteers.js';
 
 // ---------------------------------------------------------------------
 // Validation
@@ -163,13 +164,22 @@ const processLogout = (req, res) => {
 // Pages behind a login
 // ---------------------------------------------------------------------
 
-const showDashboard = (req, res) => {
-  res.render('dashboard', {
-    title: 'Dashboard',
-    name: req.session.user.name,
-    email: req.session.user.email,
-    role: req.session.user.role_name,
-  });
+const showDashboard = async (req, res, next) => {
+  try {
+    // The projects this user signed up for, so the dashboard can list them
+    // and offer a way out of each one.
+    const volunteeredProjects = await getProjectsByVolunteer(req.session.user.user_id);
+
+    res.render('dashboard', {
+      title: 'Dashboard',
+      name: req.session.user.name,
+      email: req.session.user.email,
+      role: req.session.user.role_name,
+      volunteeredProjects,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const showUsersPage = async (req, res, next) => {

@@ -100,3 +100,19 @@ INSERT INTO roles (role_name) VALUES ('admin'), ('user');
 
 -- The admin account for the QA team is seeded by src/init-db.js, because the
 -- password has to be hashed with bcrypt before it can be stored.
+
+-- =====================================================================
+-- Volunteering: which users signed up for which projects
+-- =====================================================================
+
+-- A user can volunteer for many projects and a project can have many
+-- volunteers, so the relationship needs its own table. The composite
+-- primary key is what stops the same person signing up twice.
+CREATE TABLE volunteer (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    signed_up_on DATE NOT NULL DEFAULT CURRENT_DATE,
+    PRIMARY KEY (user_id, project_id),
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE CASCADE
+);

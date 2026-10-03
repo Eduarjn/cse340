@@ -10,6 +10,40 @@
 </div>
 
 <div class="card">
+  <h2>Projects you are volunteering for</h2>
+
+  <% if (volunteeredProjects.length === 0) { %>
+    <p>
+      You have not signed up for anything yet. Open a
+      <a href="/projects">service project</a> and press the volunteer button to
+      add it here.
+    </p>
+  <% } else { %>
+    <ul class="volunteer-list">
+      <% volunteeredProjects.forEach((project) => { %>
+        <li>
+          <div>
+            <h3><a href="/project/<%= project.project_id %>"><%= project.title %></a></h3>
+            <p>
+              <%= project.date.toISOString().slice(0, 10) %>
+              &middot; <%= project.location %>
+              &middot; hosted by <%= project.organization_name %>
+            </p>
+          </div>
+
+          <%# returnTo keeps the user on the dashboard instead of bouncing
+              them to the project page they just left. %>
+          <form action="/remove-volunteer/<%= project.project_id %>" method="post">
+            <input type="hidden" name="returnTo" value="dashboard">
+            <button type="submit" class="button button-secondary">Remove me</button>
+          </form>
+        </li>
+      <% }); %>
+    </ul>
+  <% } %>
+</div>
+
+<div class="card">
   <h2>Browse the site</h2>
   <div class="form-actions">
     <a href="/organizations" class="button button-secondary">Organizations</a>

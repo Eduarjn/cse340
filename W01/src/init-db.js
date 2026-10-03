@@ -66,6 +66,19 @@ export const ensureAuthTables = async () => {
   `);
 };
 
+// Adds the volunteer join table to a database that predates it, leaving the
+// rows already stored in the other tables alone.
+export const ensureVolunteerTable = async () => {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS volunteer (
+      user_id INT NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
+      project_id INT NOT NULL REFERENCES project (project_id) ON DELETE CASCADE,
+      signed_up_on DATE NOT NULL DEFAULT CURRENT_DATE,
+      PRIMARY KEY (user_id, project_id)
+    )
+  `);
+};
+
 // Seeds the QA admin account. Safe to run on every boot: the account is only
 // created once, and its role is corrected if it ever drifts.
 export const ensureAdminUser = async () => {
